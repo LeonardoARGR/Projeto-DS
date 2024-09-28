@@ -1,0 +1,12 @@
+[
+    {
+        "id": "1",
+        "nome":"Agachamento",
+        "descricao":"Posicione-se em pé, mantendo os pés afastados na largura dos ombros. Dobre os joelhos e desça o quadril, simulando o ato de se sentar em uma cadeira. Mantenha as costas retas e verifique se os joelhos estão alinhados com os tornozelos. Volte à posição inicial e repita o movimento de 10 a 12 vezes."
+    },
+    {
+        "id": "2",
+        "nome":"Polichinelo",
+        "descricao":"Em pé, com os pés juntos, dê um salto enquanto abre os braços e as pernas para os lados, formando um “X” no ar. Em seguida, dê outro salto para voltar à posição inicial. Repita o movimento por 30 segundos a 1 minuto."
+    }
+]

@@ -56,9 +56,9 @@ server.get("/deletar/:id", async function (req, res) {
     });
 
     if(deletado) {
-        res.json({mensagem: "Aluno deletado com sucesso!"});
+        res.json({mensagem: "Usuário deletado com sucesso!"});
     }else {
-        res.states(404).json({mensagem: "Aluno não encontrado"});
+        res.states(404).json({mensagem: "Usuário não encontrado"});
     }
 })
 

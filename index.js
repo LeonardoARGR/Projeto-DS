@@ -43,8 +43,14 @@ server.get("/salvar/:nome/:email/:senha", async function (req, res) {
 });
 
 server.get("/mostrar", async function (req, res) {
-    const usuarios = await User.findAll(); //Busca todos os registros
-    res.json(usuarios); //Retorna os registros em formato JSON
+    
+    
+    try {
+        const usuarios = await User.findAll(); //Busca todos os registros
+        res.json(usuarios); //Retorna os registros em formato JSON
+    } catch (error) {
+        res.status(500).json({mensagem: `Erro ao buscar usuário: ${error}`}); //REtorna erro ao cliente
+    }
 });
 
 server.get("/deletar/:id", async function (req, res) {

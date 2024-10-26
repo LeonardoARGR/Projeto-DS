@@ -3,25 +3,72 @@ const express = require("express")//para usar o express
 
 const server = express()//para criar um servidor
 
-//###CONEXÃO BANCO DE DADOS###
+const { create } = require("express-handlebars");
+
+// CONEXÃO BANCO DE DADOS
 const conexaoComBanco = new Sequelize("bd_pri", "root", "", {
     host: "localhost",
     dialect: "mysql",
   });
-//### FIM CONEXÃO BANCO DE DADOS###
+// FIM CONEXÃO BANCO DE DADOS
+
+const User = conexaoComBanco.define('users', {
+    nome: {
+        type: Sequelize.STRING, //VARCHAR
+    },
+    email: {
+        type: Sequelize.STRING, //VARCHAR
+    },
+    senha: {
+        type: Sequelize.STRING, //VARCHAR
+    }
+})
+
+User.sync({force: false});
+
 
 // ROTAS
 server.get("/", (req, res) =>{
     return res.json({mensagem:"Hello NODE"})
 });
 
-server.get("/usuario/:nome/:email/:senha", (req, res) =>{
-    res.send(req.params);
+server.get("/salvar/:nome/:email/:senha", async function (req, res) {
+    const {nome, email, senha} = req.params;
+    const novoUser = await User.create({nome, email, senha}); //função que espera
+
+    res.json({
+        resposta: "Aluno criado com sucesso!",
+        user: novoUser,
+    });
 });
 
-server.get("/habito/:nome/:descricao", (req, res) =>{
-    res.send(req.params);
+server.get("/mostrar", async function (req, res) {
+    const usuarios = await User.findAll(); //Busca todos os registros
+    res.json(usuarios); //Retorna os registros em formato JSON
 });
+
+server.get("/deletar/:id", async function (req, res) {
+    const {id} = req.params;
+    const idNumber = parseInt(id ,10); //Converte o ID para número (10 = 2 casas decimais)
+
+    const deletado = await User.destroy({
+        where: { id: idNumber},
+    });
+
+    if(deletado) {
+        res.json({mensagem: "Aluno deletado com sucesso!"});
+    }else {
+        res.states(404).json({mensagem: "Aluno não encontrado"});
+    }
+})
+
+// FIM DAS ROTAS
+
+/*
+const abs = create({ defaultLayout: "main" }); //definindo layout padrão
+server.engine("handlebars", abs.engine); //denfinindo o motor e o recheio 
+server.set("view engine", "handlebars"); //definindo o tipo e o tipo lo
+*/
 
 server.listen(3031, function () {
     console.log("Servidor aberto na rota 3031");

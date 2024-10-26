@@ -62,6 +62,23 @@ server.get("/deletar/:id", async function (req, res) {
     }
 })
 
+server.get("/editar/:id/:nome/:email/:senha", async function (req, res) {
+    const {id, nome, idade} = req.params;
+    const idNumber = parseInt(id, 10); //Converte o ID para número
+
+    const [updated] = await User.update(
+        {nome, idade},
+        {
+            where: {id:idNumber}, //Usa o ID numérico
+        }
+    );
+
+    res.json({
+        mensagem: "Usuário atualizado com sucesso!",
+    })
+
+})
+
 // FIM DAS ROTAS
 
 /*

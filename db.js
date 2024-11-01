@@ -28,8 +28,8 @@ const Habito = conexaoComBanco.define("habito", {
     }
 });
 
-Usuario.sync({force: true}); //CRIANDO TABELA
-Habito.sync({force: true}); //CRIANDO TABELA
+Usuario.sync({force: false}); //CRIANDO TABELA
+Habito.sync({force: false}); //CRIANDO TABELA
 
 Usuario.create({
     nome: "Leonardo",
@@ -38,9 +38,9 @@ Usuario.create({
 }) //INSERT
 
 Usuario.create({
-    nome: "Lucas",
-    email: "luc4spereira@gmail.com",
-    senha: "ls54#j"
+    nome: "Mateus",
+    email: "mateus505@gmail.com",
+    senha: "8764fhdso"
 }) //INSERT
 
 Habito.create({

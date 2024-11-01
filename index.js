@@ -1,9 +1,11 @@
+const cors = require('cors');
 const Sequelize = require("sequelize");
 const express = require("express")//para usar o express
 
 const server = express()//para criar um servidor
 
 const { create } = require("express-handlebars");
+
 
 // CONEXÃO BANCO DE DADOS
 const conexaoComBanco = new Sequelize("bd_pri", "root", "", {
@@ -12,7 +14,7 @@ const conexaoComBanco = new Sequelize("bd_pri", "root", "", {
   });
 // FIM CONEXÃO BANCO DE DADOS
 
-const User = conexaoComBanco.define('users', {
+const User = conexaoComBanco.define('usuarios', {
     nome: {
         type: Sequelize.STRING, //VARCHAR
     },
@@ -26,6 +28,8 @@ const User = conexaoComBanco.define('users', {
 
 User.sync({force: false});
 
+
+server.use(cors());
 
 // ROTAS
 server.get("/", (req, res) =>{
@@ -87,11 +91,9 @@ server.get("/editar/:id/:nome/:email/:senha", async function (req, res) {
 
 // FIM DAS ROTAS
 
-/*
 const abs = create({ defaultLayout: "main" }); //definindo layout padrão
 server.engine("handlebars", abs.engine); //denfinindo o motor e o recheio 
-server.set("view engine", "handlebars"); //definindo o tipo e o tipo lo
-*/
+server.set("view engine", "handlebars"); //definindo o tipo e o tipo
 
 server.listen(3031, function () {
     console.log("Servidor aberto na rota 3031");

@@ -23,6 +23,7 @@ async function cadastrarUser(nome, email, senha) {
 
         if (data.resposta) {
             alert(data.resposta);  // Exibir mensagem de sucesso
+            window.location.href = 'index.html';
         } else {
             alert("Erro ao cadastrar o usuário");
         }

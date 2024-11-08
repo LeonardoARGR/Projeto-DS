@@ -12,4 +12,7 @@ async function carregarUsers(){
         container.appendChild(userDiv);
     })
 }
-window.onload = carregarUsers();
+
+async function cadastrarUsuario(){
+    
+}

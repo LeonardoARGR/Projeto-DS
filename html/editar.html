@@ -9,11 +9,11 @@
     </head>
     <body>
         <div class="row">
-            <div class="col-7">
+            <div class="col-4">
                 
             </div>
-            <div class="col-5">
-                <div class="title">Cadastrar Usuário</div>
+            <div class="col-8">
+                <div class="title">Editar Usuário</div>
                 <div id="dados" class="container">
                     <form id="formCadastro">
                         <div class="mb-3">
@@ -28,12 +28,15 @@
                             <label for="senha_user" class="form-label">Senha</label>
                             <input type="password" class="form-control" id="senha_user" required>
                         </div>
-                        <button type="button" onclick="cadastrarUser()" class="btn btn-outline-secondary" id="btnCadastrar">Cadastrar</button>
+                        <button type="button" onclick="salvarAlteracoes()" class="btn btn-outline-secondary" id="btnCadastrar">Cadastrar</button>
                     </form>
                 </div>
             </div>
         </div>
         
         <script src="main.js"></script>
+        <script>
+            window.onload = carregarUser();
+        </script>
     </body>
 </html>

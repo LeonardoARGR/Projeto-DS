@@ -8,28 +8,23 @@
         <title>Exibir Dados</title>
     </head>
     <body>
-        <div class="container">
-            <div class="row">
-                <div class="col-7">
+        <div class="container-fluid main-container">
+            <div class="row row-container">
+                <div class="col-4 green-col">
                     <div class="title">Bem vindo!</div>
+                    <div class="text">Ainda não tem uma conta?&nbsp<a href="cadastrar.html">Crie aqui!</a></div>
                 </div>
-                <div class="col-5">
-                    <div class="title">Cadastrar Usuário</div>
+                <div class="col-8 white-col">
+                    <div class="title">Login</div>
                     <div id="dados" class="container">
-                        <form id="formCadastro">
-                            <div class="mb-3">
-                                <label for="nome_user" class="form-label">Nome de usuário</label>
-                                <input type="text" class="form-control" id="nome_user" required>
+                        <form class="form-div" id="formCadastro">
+                            <div class="mb-3 input-div">
+                                <input type="email" class="form-control" id="email_user" placeholder="Email" required>
                             </div>
-                            <div class="mb-3">
-                                <label for="email_user" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email_user" required>
+                            <div class="mb-3 input-div">
+                                <input type="password" class="form-control" id="senha_user" placeholder="Senha" required>
                             </div>
-                            <div class="mb-3">
-                                <label for="senha_user" class="form-label">Senha</label>
-                                <input type="password" class="form-control" id="senha_user" required>
-                            </div>
-                            <button type="button" onclick="login()" class="btn btn-outline-secondary" id="btnCadastrar">Cadastrar</button>
+                            <button type="button" onclick="loginUser()" class="btn btn-outline-secondary" id="btnCadastrar">Entrar</button>
                         </form>
                     </div>
                 </div>

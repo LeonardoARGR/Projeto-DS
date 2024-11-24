@@ -10,6 +10,7 @@ const { create } = require("express-handlebars");
 // CONEXÃO BANCO DE DADOS
 const conexaoComBanco = new Sequelize("bd_pri", "root", "", {
     host: "localhost",
+    port: 3307, //porta no linux
     dialect: "mysql",
   });
 // FIM CONEXÃO BANCO DE DADOS

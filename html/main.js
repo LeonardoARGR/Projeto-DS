@@ -58,6 +58,8 @@ async function exibirHabito() {
                 <div class="row habito-row">
                     <div class='col-5 foto-col'>
                         <img src="${habito.caminho_imagem}" class="img-thumbnail">
+                        <label for="horario">Selecione um horário para praticar!</label>
+                        <input class="form-control horario" type="time" id="horario">
                         <button class="btn btn-outline-success" onclick="salvarHabito(${habito.id})">Salvar hábito</button>
                     </div>
                     <div class='col-7 conteudo-col'>
@@ -76,6 +78,34 @@ async function exibirHabito() {
         console.error('Error:', error);
         alert("Erro de requisição");
         window.location.href = `index.html`
+    }
+}
+
+async function salvarHabito() {
+    const usuarioid = localStorage.getItem('userId');
+    const horario_praticado = document.getElementById('horario').value;
+    
+    if (usuarioid) {
+        if (horario_praticado) {
+            const habitoid = urlParams.get("id");
+            try {
+                const resposta = await fetch(`http://localhost:3031/salvar-habito/${horario_praticado}/${usuarioid}/${habitoid}`);
+                const data = await resposta.json();
+                
+                if (resposta.ok) { // Verifica se a resposta foi bem-sucedida
+                    alert(data.resposta);
+                } else {
+                    alert("Hábito não salvo");
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert("Erro de requisição");
+            }
+        } else {
+            alert("Erro! Horário não definido");
+        }
+    } else {
+        alert("Você precisa entrar em uma conta para fazer isso.");
     }
 }
 

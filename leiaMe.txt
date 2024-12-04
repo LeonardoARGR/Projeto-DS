@@ -27,3 +27,5 @@ npm install express-session
 
 
 ALTERAR O CORS - LINL DO SERVIDOR DO FRONT
+
+ERRO NO CREATEAT E UPDATEDAT?

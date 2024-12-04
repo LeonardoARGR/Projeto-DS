@@ -141,6 +141,15 @@
     object-fit: cover;
     margin-bottom: 30px;
 }
+.foto-col input {
+    width: 200px;
+    max-width: 50%;
+    margin-bottom: 20px;
+}
+.foto-col label {
+    font-size: 17px;
+    margin-bottom: 10px;
+}
 
 .conteudo-col {
     display: flex;

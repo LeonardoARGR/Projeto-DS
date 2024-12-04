@@ -157,6 +157,23 @@ server.get("/habitos", async function (req, res) {
     }
 });
 
+server.get("/salvar-habito/:horario_praticado/:usuarioid/:habitoid", async function (req, res) {
+    const { horario_praticado, usuarioid, habitoid } = req.params;
+
+    // Converte os IDs para números inteiros
+    const usuarioIdNumber = parseInt(usuarioid, 10);
+    const habitoIdNumber = parseInt(habitoid, 10);
+
+    try {
+        const habitoSalvo = await HabitoSalvo.create({horario_praticado, usuarioIdNumber, habitoIdNumber});
+        res.json({
+            resposta: "Hábito salvo com sucesso!"
+        });
+    } catch (error) {
+        res.status(500).json({ mensagem: `Erro ao salvar hábito: ${error}` });
+    }
+});
+
 // FIM DAS ROTAS
 
 const abs = create({ defaultLayout: "main" }); // definindo layout padrão

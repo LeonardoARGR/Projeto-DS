@@ -18,3 +18,12 @@ npm install --save mysql2
 
 #CAMADA DE VIEW
 npm install --save express-handlebars
+
+#Markdown
+npm install marked
+
+#Sessão
+npm install express-session
+
+
+ALTERAR O CORS - LINL DO SERVIDOR DO FRONT

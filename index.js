@@ -1,21 +1,20 @@
 const cors = require('cors');
 const Sequelize = require("sequelize");
-const express = require("express")//para usar o express
+const express = require("express");
 
-const server = express()//para criar um servidor
+const server = express(); // para criar um servidor
 
 const { create } = require("express-handlebars");
 
-
 // CONEXÃO BANCO DE DADOS
 const conexaoComBanco = new Sequelize("bd_pri", "root", "", {
-    host: "127.0.0.1",
+    host: "localhost",
     dialect: "mysql",
-    port: 3307, //porta no linux
-  });
+});
 // FIM CONEXÃO BANCO DE DADOS
 
-const User = conexaoComBanco.define('usuarios', {
+// Definindo a tabela "usuario"
+const User = conexaoComBanco.define('usuario', {
     nome: {
         type: Sequelize.STRING, //VARCHAR
     },
@@ -25,77 +24,145 @@ const User = conexaoComBanco.define('usuarios', {
     senha: {
         type: Sequelize.STRING, //VARCHAR
     }
-})
+});
 
-User.sync({force: false});
+// Definindo a tabela "habito"
+const Habito = conexaoComBanco.define("habito", {
+    nome: {
+        type: Sequelize.STRING, //VARCHAR
+    },
+    previa: {
+        type: Sequelize.TEXT('long'), //TEXTAREA
+    },
+    descricao: {
+        type: Sequelize.TEXT('long'), //TEXTAREA
+    },
+    caminho_imagem: {
+        type: Sequelize.STRING, //VARCHAR
+    }
+});
 
+// Definindo a tabela intermediária "habito_salvo"
+const HabitoSalvo = conexaoComBanco.define("habito_salvo", {
+    horario_praticado: {
+        type: Sequelize.TIME, // Horário no formato HH:MM:SS
+        allowNull: false
+    }
+});
 
+// Configurando relações
+User.belongsToMany(Habito, { through: HabitoSalvo });
+Habito.belongsToMany(User, { through: HabitoSalvo });
+
+// Criando as tabelas -> 'force: true' = recria as tabelas, apagando dados existentes.
+conexaoComBanco.sync({ force: false })
+    .then(() => {
+        console.log("Tabelas sincronizadas!");
+    })
+    .catch(error => {
+        console.error("Erro ao sincronizar tabelas:", error);
+    });
+
+// Configuração do middleware CORS
 server.use(cors());
 
 // ROTAS
-server.get("/", (req, res) =>{
-    return res.json({mensagem:"Hello NODE"})
-});
 
 server.get("/salvar/:nome/:email/:senha", async function (req, res) {
-    const {nome, email, senha} = req.params;
-    const novoUser = await User.create({nome, email, senha}); //função que espera
-
-    res.json({
-        resposta: "Aluno criado com sucesso!",
-        user: novoUser,
-    });
+    const { nome, email, senha } = req.params;
+    try {
+        const novoUser = await User.create({ nome, email, senha });
+        res.json({
+            resposta: "Usuário criado com sucesso!",
+            user: novoUser,
+        });
+    } catch (error) {
+        res.status(500).json({ mensagem: `Erro ao criar usuário: ${error}` });
+    }
 });
 
 server.get("/mostrar", async function (req, res) {
-    
-    
     try {
         const usuarios = await User.findAll(); //Busca todos os registros
         res.json(usuarios); //Retorna os registros em formato JSON
     } catch (error) {
-        res.status(500).json({mensagem: `Erro ao buscar usuário: ${error}`}); //REtorna erro ao cliente
+        res.status(500).json({ mensagem: `Erro ao buscar usuário: ${error}` });
     }
 });
 
 server.get("/deletar/:id", async function (req, res) {
-    const {id} = req.params;
-    const idNumber = parseInt(id ,10); //Converte o ID para número (10 = 2 casas decimais)
+    const { id } = req.params;
+    const idNumber = parseInt(id, 10); // Converte o ID para número
 
-    const deletado = await User.destroy({
-        where: { id: idNumber},
-    });
+    try {
+        const deletado = await User.destroy({
+            where: { id: idNumber },
+        });
 
-    if(deletado) {
-        res.json({mensagem: "Usuário deletado com sucesso!"});
-    }else {
-        res.states(404).json({mensagem: "Usuário não encontrado"});
+        if (deletado) {
+            res.json({ mensagem: "Usuário deletado com sucesso!" });
+        } else {
+            res.status(404).json({ mensagem: "Usuário não encontrado" });
+        }
+    } catch (error) {
+        res.status(500).json({ mensagem: `Erro ao deletar usuário: ${error}` });
     }
-})
+});
 
 server.get("/editar/:id/:nome/:email/:senha", async function (req, res) {
-    const {id, nome, email, senha} = req.params;
-    const idNumber = parseInt(id, 10); //Converte o ID para número
+    const { id, nome, email, senha } = req.params;
+    const idNumber = parseInt(id, 10); // Converte o ID para número
 
-    const [updated] = await User.update(
-        {nome, email, senha},
-        {
-            where: {id:idNumber}, //Usa o ID numérico
+    try {
+        const [updated] = await User.update(
+            { nome, email, senha },
+            {
+                where: { id: idNumber },
+            }
+        );
+
+        if (updated) {
+            res.json({ mensagem: "Usuário atualizado com sucesso!" });
+        } else {
+            res.status(404).json({ mensagem: "Usuário não encontrado" });
         }
-    );
+    } catch (error) {
+        res.status(500).json({ mensagem: `Erro ao atualizar usuário: ${error}` });
+    }
+});
 
-    res.json({
-        mensagem: "Usuário atualizado com sucesso!",
-    })
+server.get("/entrar/:email/:senha", async function (req, res) {
+    const { email, senha } = req.params;
+    try {
+        const usuario = await User.findOne({ where: { email, senha } }); // Verifica o usuário pelo email e senha
+        if (usuario) {
+            // Usuário encontrado e senha correta
+            res.json({ mensagem: "Usuário logado com sucesso!", userId: usuario.id, userName: usuario.nome });
+        } else {
+            // Usuário não encontrado ou senha incorreta
+            res.status(401).json({ mensagem: "Email ou senha incorretos." });
+        }
+    } catch (error) {
+        res.status(500).json({ mensagem: `Erro ao tentar logar: ${error}` });
+    }
+});
 
-})
+// ROTAS HABITOS
+server.get("/habitos", async function (req, res) {
+    try {
+        const habitos = await Habito.findAll(); // Busca todos os registros
+        res.json(habitos); // Retorna os registros em formato JSON
+    } catch (error) {
+        res.status(500).json({ mensagem: `Erro ao buscar os hábitos: ${error}` });
+    }
+});
 
 // FIM DAS ROTAS
 
-const abs = create({ defaultLayout: "main" }); //definindo layout padrão
-server.engine("handlebars", abs.engine); //denfinindo o motor e o recheio 
-server.set("view engine", "handlebars"); //definindo o tipo e o tipo
+const abs = create({ defaultLayout: "main" }); // definindo layout padrão
+server.engine("handlebars", abs.engine); // definindo o motor e o recheio
+server.set("view engine", "handlebars"); // definindo o tipo e o tipo
 
 server.listen(3031, function () {
-    console.log("Servidor aberto na rota 3031");
+    console.log("Servidor aberto na porta 3031");
 });
